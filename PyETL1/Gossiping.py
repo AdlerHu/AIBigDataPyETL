@@ -9,24 +9,53 @@ headers = {
 url = 'https://www.ptt.cc/bbs/Gossiping/index.html'
 url_head = 'https://www.ptt.cc'
 
-titles = []
-title_href = []
-
 ss = requests.session()
 ss.cookies['over18'] = '1'
 
-for i in range(0, 5):
+for i in range(0, 3):
     res = ss.get(url, headers=headers)
     soup = BeautifulSoup(res.text, 'html.parser')
 
+    last_page_url = url_head + soup.select('a.btn.wide')[1]['href']
     title = soup.select('div.title a')
 
     for t in title:
-        print(t.text)
-        print(url_head + t['href'])
-        print("------------------------------------------------------")
+        article_title = t.text
+        article_url = url_head + t['href']
 
-    last_page_url = url_head + soup.select('a.btn.wide')[1]['href']
+        # 依序進入各個文章
+        res = ss.get(article_url, headers = headers)
+        soup = BeautifulSoup(res.text, 'html.parser')
+
+        # 標題、作者、日期的資訊
+        result = soup.select('span.article-meta-value')
+        author = result[0].text
+        date = result[3].text
+
+        # 推、噓、箭頭
+        answers = soup.select('div.push span.f1.hl.push-tag')
+
+        push = 0
+        boo = 0
+        arrow = 0
+
+        for answer in answers:
+            if answer.text == '→ ':
+                arrow += 1
+            elif answer.text == '噓 ':
+                boo += 1
+            else:
+                push += 1
+
+        print(article_title)
+        print(author)
+        print(date)
+        print('推:', push)
+        print('噓:', boo)
+        print('→:', arrow)
+
+        print('---------------split---------------')
+
     url = last_page_url
 
     time.sleep(random.randrange(3))
