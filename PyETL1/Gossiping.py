@@ -24,37 +24,41 @@ for i in range(0, 3):
         article_url = url_head + t['href']
 
         # 依序進入各個文章
-        res = ss.get(article_url, headers = headers)
-        soup = BeautifulSoup(res.text, 'html.parser')
+        article_res = ss.get(article_url, headers=headers)
+        soup = BeautifulSoup(article_res.text, 'html.parser')
 
-        # 標題、作者、日期的資訊
-        result = soup.select('span.article-meta-value')
-        author = result[0].text
-        date = result[3].text
 
-        # 推、噓、箭頭
-        answers = soup.select('div.push span.f1.hl.push-tag')
+        try:
+            # 標題、作者、日期的資訊
+            result = soup.select('span.article-meta-value')
+            author = result[0].text
+            date = result[3].text
 
-        push = 0
-        boo = 0
-        arrow = 0
+            # 推、噓、箭頭
+            answers = soup.select('div.push span.f1.hl.push-tag')
 
-        for answer in answers:
-            if answer.text == '→ ':
-                arrow += 1
-            elif answer.text == '噓 ':
-                boo += 1
-            else:
-                push += 1
+            push = 0
+            boo = 0
+            arrow = 0
 
-        print(article_title)
-        print(author)
-        print(date)
-        print('推:', push)
-        print('噓:', boo)
-        print('→:', arrow)
+            for answer in answers:
+                if answer.text == '→ ':
+                    arrow += 1
+                elif answer.text == '噓 ':
+                    boo += 1
+                else:
+                    push += 1
 
-        print('---------------split---------------')
+            print(article_title)
+            print(author)
+            print(date)
+            print('推:', push)
+            print('噓:', boo)
+            print('→:', arrow)
+
+            print('---------------split---------------')
+        except Exception as err:
+            print(err.args)
 
     url = last_page_url
 
