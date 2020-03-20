@@ -66,22 +66,24 @@ for i in range(0, 3):
 
             print('---------------split---------------')
 
+            article_content += '---------------split--------------- \n'
+            article_content += '標題: {} \n'.format(article_title)
+            article_content += '作者: {} \n'.format(author)
+            article_content += '時間: {} \n'.format(date)
+            article_content += '推: {} \n'.format(push)
+            article_content += '噓: {} \n'.format(boo)
+            article_content += '箭頭: {} \n'.format(arrow)
+            article_content += article_url
+
             try:
                 with open(path + '{}.txt'.format(article_title), 'w', encoding='utf-8') as f:
-                    f.writelines('標題: {} \n'.format(article_title))
-                    f.writelines('作者: {} \n'.format(author))
-                    f.writelines('時間: {} \n'.format(date))
                     f.write(article_content)
-                    f.writelines('推: {} \n'.format(push))
-                    f.writelines('噓: {} \n'.format(boo))
-                    f.writelines('箭頭: {} \n'.format(arrow))
-                    f.writelines(article_url)
 
-            except Exception as err:
-                print(err.args)
+            except FileNotFoundError as err:
+                print('寫入失敗')
 
         except Exception as err:
-            print(err.args)
+            print('讀取失敗')
 
     url = last_page_url
 
