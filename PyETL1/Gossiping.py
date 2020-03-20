@@ -2,12 +2,18 @@ import requests
 from bs4 import BeautifulSoup
 import time
 import random
+import os
 
 headers = {
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
                   'Chrome/80.0.3987.132 Safari/537.36'}
 url = 'https://www.ptt.cc/bbs/Gossiping/index.html'
 url_head = 'https://www.ptt.cc'
+
+# 建立另一個資料夾
+path = './pttGossiping/'
+if not os.path.exists(path):
+    os.mkdir(path)
 
 ss = requests.session()
 ss.cookies['over18'] = '1'
@@ -33,6 +39,8 @@ for i in range(0, 3):
             result = soup.select('span.article-meta-value')
             author = result[0].text
             date = result[3].text
+            # article_content = soup.select('div[id="main-content"]')[0].text.split('--')[0]
+            article_content = soup.select('div#main-content')[0].text.split('2020')[1].split('--')[0]
 
             # 推、噓、箭頭
             answers = soup.select('div.push span.f1.hl.push-tag')
@@ -57,6 +65,21 @@ for i in range(0, 3):
             print('→:', arrow)
 
             print('---------------split---------------')
+
+            try:
+                with open(path + '{}.txt'.format(article_title), 'w', encoding='utf-8') as f:
+                    f.writelines('標題: {} \n'.format(article_title))
+                    f.writelines('作者: {} \n'.format(author))
+                    f.writelines('時間: {} \n'.format(date))
+                    f.write(article_content)
+                    f.writelines('推: {} \n'.format(push))
+                    f.writelines('噓: {} \n'.format(boo))
+                    f.writelines('箭頭: {} \n'.format(arrow))
+                    f.writelines(article_url)
+
+            except Exception as err:
+                print(err.args)
+
         except Exception as err:
             print(err.args)
 
