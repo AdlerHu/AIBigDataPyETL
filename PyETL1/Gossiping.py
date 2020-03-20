@@ -85,7 +85,7 @@ for i in range(0, 3):
             print('讀取失敗')
 
         except IndexError as err:
-            print(err.args)
+            print('WTF')
 
     url = last_page_url
 
