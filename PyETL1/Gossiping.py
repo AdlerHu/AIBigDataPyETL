@@ -33,7 +33,6 @@ for i in range(0, 3):
         article_res = ss.get(article_url, headers=headers)
         soup = BeautifulSoup(article_res.text, 'html.parser')
 
-
         try:
             # 標題、作者、日期的資訊
             result = soup.select('span.article-meta-value')
@@ -82,8 +81,11 @@ for i in range(0, 3):
             except FileNotFoundError as err:
                 print('寫入失敗')
 
-        except Exception as err:
+        except OSError as err:
             print('讀取失敗')
+
+        except IndexError as err:
+            print(err.args)
 
     url = last_page_url
 
